@@ -1,0 +1,35 @@
+# https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file
+
+[toolchain]
+# For more specific info about this, see:
+# https://rust-lang.github.io/rustup/overrides.html#channel
+channel = "nightly"
+
+# For the exhaustive list of components, see:
+# https://rust-lang.github.io/rustup/concepts/components.html
+components = [
+  "rustc",
+  "cargo",
+  "rustfmt",
+  "ruststd",
+  "rust-docs",
+  "rust-analyzer",
+  "clippy",
+  "miri",
+  "rust-src",
+  "rust-mingw",
+  "llvm-tools",
+  "rustc-dev",
+]
+
+# For all the supported platforms, see:
+# https://doc.rust-lang.org/nightly/rustc/platform-support.html#platform-support
+targets = [
+  "x86_64-unknown-linux-gnu",
+  "x86_64-unknown-linux-musl",
+  "wasm32-unknown-unknown",
+  "thumbv6m-none-eabi",
+  "thumbv7em-none-eabihf",
+]
+
+profile = "default" # default, minimal, or complete

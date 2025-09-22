@@ -19,16 +19,6 @@
       flake-parts,
       ...
     }:
-    let
-      # Specify either of the channel or the profile.
-      # For more details, see:
-      # https://github.com/nix-community/fenix?tab=readme-ov-file#toolchain
-      #
-      # Channel of the Rust toolchain ("beta" or "stable")
-      # channel = "stable";
-      # Profile of the Rust toolchain ("default", "mininal", or "complete")
-      profile = "default";
-    in
     flake-parts.lib.mkFlake { inherit inputs; } {
       systems = nixpkgs.lib.systems.flakeExposed;
 
@@ -53,13 +43,11 @@
               overlay = [ inputs.fenix.overlays.default ];
             };
 
-            # Override the toolchain defined based on the profile specified above.
-            # The toolchain attr implies that it comes with all the components.
-            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain inputs.fenix.packages.${profile}.toolchain;
-
-            # Override the toolchain defined based on the profile specified above.
-            # craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
-            #   inputs.fenix.packages.${channel}.toolchain;
+            # Override the toolchain defined in the toolchain file.
+            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain inputs.fenix.packages.fromToolchainFile {
+              file = ./rust-toolchain.toml;
+              sha256 = lib.fakeSha256;
+            };
 
             commonArgs = {
               # For more details, see:
@@ -87,7 +75,7 @@
           packages.default = craneLib.buildPackage (
             commonArgs
             // {
-
+              cargoArtifacts = craneLib.buildDepsOnly commonArgs;
             }
           );
 
@@ -96,7 +84,9 @@
               (commonArgs.buildInputs or [ ])
               ++ (commonArgs.nativeBuildInputs or [ ])
               ++ builtins.attrValues {
-                inherit (pkgs) rust-analyzer-nightly;
+                inherit (pkgs)
+                  rust-analyzer-nightly
+                  ; # From fenix
               };
           };
 
@@ -108,6 +98,7 @@
               # 'nixfmt-rfc-style' is deprecated and will be removed in the future.
               # nixfmt-rfc-style.enable = true;
               rustfmt.enable = true;
+              taplo.enable = true;
             };
           };
         };
