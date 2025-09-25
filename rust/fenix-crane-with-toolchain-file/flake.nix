@@ -34,20 +34,25 @@
           system,
           commonArgs,
           craneLib,
+          rustToolchain,
           ...
         }:
         {
           _module.args = {
             pkgs = import nixpkgs {
               inherit system;
-              overlay = [ inputs.fenix.overlays.default ];
+              overlays = [ inputs.fenix.overlays.default ];
+            };
+
+            rustToolchain = inputs.fenix.packages.fromToolchainFile {
+              file = ./rust-toolchain.toml;
+              # TODO: replace this with the hash you will see in the error message
+              # at your first attempt to execute `nix develop`.
+              sha256 = lib.fakeSha256;
             };
 
             # Override the toolchain defined in the toolchain file.
-            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain inputs.fenix.packages.fromToolchainFile {
-              file = ./rust-toolchain.toml;
-              sha256 = lib.fakeSha256;
-            };
+            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain (_: rustToolchain);
 
             commonArgs = {
               # For more details, see:
@@ -85,9 +90,11 @@
               ++ (commonArgs.nativeBuildInputs or [ ])
               ++ builtins.attrValues {
                 inherit (pkgs)
-                  rust-analyzer-nightly
-                  ; # From fenix
+                  rust-analyzer-nightly # From fenix
+                  ;
               };
+
+            RUST_SRC_PATH = "${rustToolchain}/lib/rustlib/src/rust/library";
           };
 
           treefmt = {
