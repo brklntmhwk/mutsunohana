@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Unlicense
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
@@ -41,7 +42,22 @@
           _module.args = {
             pkgs = import nixpkgs {
               inherit system;
-              overlays = [ inputs.fenix.overlays.default ];
+              overlays = [
+                inputs.fenix.overlays.default
+                (final: prev: {
+                  rmkit = final.rustPlatform.buildRustPackage {
+                    pname = "rmkit";
+                    version = "0.0.16";
+                    src = final.fetchFromGitHub {
+                      owner = "HaoboGu";
+                      repo = "rmkit";
+                      rev = "v0.0.16";
+                      sha256 = "sha256-mKdB60NtWItYbrsmj9di6WnmJGmAuSfrgbNmu+sJxZk=";
+                    };
+                    cargoHash = "sha256-hb6tZlJX1uCOc2C0yj/FKYzNzKRfefk6S3vIPWP0370=";
+                  };
+                })
+              ];
             };
 
             rustToolchain = inputs.fenix.packages.${system}.fromToolchainFile {
@@ -71,8 +87,13 @@
 
               nativeBuildInputs = builtins.attrValues {
                 # Add additional build inputs required at build time only here.
-                # inherit (pkgs)
-                # pkg-config;
+                inherit (pkgs)
+                  cargo-make
+                  flip-link
+                  pkg-config
+                  probe-rs-tools
+                  rmkit
+                  ;
               };
             };
           };

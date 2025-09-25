@@ -1,17 +1,21 @@
+# SPDX-FileCopyrightText: 2025 Ohma Togaki
+# SPDX-License-Identifier: MIT
 {
-  description = "Mutsunohana";
+  description = ''
+    Mutsunohana ー a forgotten name whispered for snow ー is the constellation of flakes:
+    a gathering of crystalline patterns, each a template that descends like snow
+    upon the vast landscape of creation ー ephemeral yet eternal, simple yet infinite.
+  '';
   
   outputs = { ... }: {
     templates = {
       rust = {
-        path = ./rust/fenix-crane;
-        description = "Rust development environment template";
+        path = ./rust/basic;
+        description = "Basic Rust development environment template";
       };
-      rust-with-toolchain = {
-        path = ./rust/fenix-crane-with-toolchain-file;
-        description = ''
-          Rust development environment template with rust-toolchain.toml
-        '';
+      rust-rmk = {
+        path = ./rust/rmk-firmware;
+        description = "Development environment for RMK Firmware projects";
       };
     };
   };

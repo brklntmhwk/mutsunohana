@@ -25,11 +25,8 @@ components = [
 # For all the supported platforms, see:
 # https://doc.rust-lang.org/nightly/rustc/platform-support.html#platform-support
 targets = [
-  "x86_64-unknown-linux-gnu",
-  "x86_64-unknown-linux-musl",
-  "wasm32-unknown-unknown",
-  "thumbv6m-none-eabi",
-  "thumbv7em-none-eabihf",
+  "thumbv6m-none-eabi",    # nRF52840
+  "thumbv7em-none-eabihf", # RP2040
 ]
 
 profile = "default" # default, minimal, or complete
