@@ -44,7 +44,7 @@
               overlays = [ inputs.fenix.overlays.default ];
             };
 
-            rustToolchain = inputs.fenix.packages.fromToolchainFile {
+            rustToolchain = inputs.fenix.packages.${system}.fromToolchainFile {
               file = ./rust-toolchain.toml;
               # TODO: replace this with the hash you will see in the error message
               # at your first attempt to execute `nix develop`.

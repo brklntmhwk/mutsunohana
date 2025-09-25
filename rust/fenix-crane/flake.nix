@@ -51,12 +51,12 @@
           _module.args = {
             pkgs = import nixpkgs {
               inherit system;
-              overlay = [ inputs.fenix.overlays.default ];
+              overlays = [ inputs.fenix.overlays.default ];
             };
 
             # Override the toolchain defined based on the profile specified above.
             # The toolchain attr implies that it comes with all the components.
-            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain inputs.fenix.packages.${profile}.toolchain;
+            craneLib = (inputs.crane.mkLib pkgs).overrideToolchain inputs.fenix.packages.${system}.${profile}.toolchain;
 
             # Override the toolchain defined based on the profile specified above.
             # craneLib = (inputs.crane.mkLib pkgs).overrideToolchain
@@ -98,9 +98,11 @@
               ++ (commonArgs.nativeBuildInputs or [ ])
               ++ builtins.attrValues {
                 inherit (pkgs)
-                  rust-analyzer-nightly
-                  ; # From fenix
+                  rust-analyzer-nightly # From fenix
+                  ;
               };
+
+            RUST_SRC_PATH = "${inputs.fenix.packages.${system}.${profile}.rust-src}/lib/rustlib/src/rust/library";
           };
 
           treefmt = {
