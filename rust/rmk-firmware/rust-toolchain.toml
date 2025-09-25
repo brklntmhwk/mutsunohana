@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Unlicense
+
+# For the whole picture of a Rust toolchain file, See:
 # https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file
 
 [toolchain]
